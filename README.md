@@ -26,6 +26,63 @@ $ npm install @seamapi/url-search-params-serializer
 
 [npm]: https://www.npmjs.com/
 
+## Usage
+
+### Serialize an object to a string
+
+```ts
+import { serializeUrlSearchParams } from '@seamapi/url-search-params-serializer'
+
+serializeUrlSearchParams({
+  name: 'Dax',
+  age: 27,
+  isAdmin: true,
+  tags: ['cars', 'planes'],
+}) // => 'age=27&isAdmin=true&name=Dax&tags=cars&tags=planes'
+```
+
+### Update an existing URLSearchParams instance
+
+```ts
+import { updateUrlSearchParams } from '@seamapi/url-search-params-serializer'
+
+const searchParams = new URLSearchParams()
+
+searchParams.set('foo', 'bar')
+
+updateUrlSearchParams(searchParams, {
+  name: 'Dax',
+  age: 27,
+  isAdmin: true,
+  tags: ['cars', 'planes'],
+})
+
+searchParams.toString() // => 'age=27&foo=bar&isAdmin=true&name=Dax&tags=cars&tags=planes'
+```
+
+### Use directly with [Axios]
+
+```ts
+import axios from 'axios'
+import { serializeUrlSearchParams } from '@seamapi/url-search-params-serializer'
+
+const client = axios.create({
+  paramsSerializer: serializeUrlSearchParams,
+  baseURL: 'https://example.com',
+})
+
+const { data } = await client.get('/search', {
+  params: {
+    name: 'Dax',
+    age: 27,
+    isAdmin: true,
+    tags: ['cars', 'planes'],
+  },
+})
+```
+
+[Axios]: https://axios-http.com/
+
 ## Development and Testing
 
 ### Quickstart
