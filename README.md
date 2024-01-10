@@ -28,7 +28,7 @@ $ npm install @seamapi/url-search-params-serializer
 
 ## Usage
 
-Serialize an object to a string.
+### Serialize an object to a string
 
 ```ts
 import { serializeUrlSearchParams } from '@seamapi/url-search-params-serializer'
@@ -41,7 +41,7 @@ serializeUrlSearchParams({
 }) // => 'age=27&isAdmin=true&name=Dax&tags=cars&tags=planes'
 ```
 
-Update an existing URLSearchParams instance.
+### Update an existing URLSearchParams instance
 
 ```ts
 import { updateUrlSearchParams } from '@seamapi/url-search-params-serializer'
@@ -60,7 +60,7 @@ updateUrlSearchParams(searchParams, {
 searchParams.toString() // => 'age=27&foo=bar&isAdmin=true&name=Dax&tags=cars&tags=planes'
 ```
 
-Use directly with [Axios].
+### Use directly with [Axios]
 
 ```ts
 import axios from 'axios'
