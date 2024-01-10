@@ -7,7 +7,7 @@ Serializes JavaScript objects to URLSearchParams.
 
 ## Description
 
-Defines the standard for how Seam SDK and Seam API consumers
+Defines the standard for how the Seam SDKs and other Seam API consumers
 should serialize objects to [URLSearchParams] in HTTP GET requests.
 
 Serves as a reference implementation for Seam SDKs in other languages.
