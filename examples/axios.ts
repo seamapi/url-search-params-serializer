@@ -13,11 +13,8 @@ export const describe: Describe = 'Serialize Axios params'
 export const builder: Builder = {}
 
 export const handler: Handler<Options> = async ({ logger }) => {
-  const client = axios.create({
+  const { data } = await axios.get('https://httpbin.org/get', {
     paramsSerializer: serializeUrlSearchParams,
-    baseURL: 'https://httpbin.org',
-  })
-  const { data } = await client.get('/get', {
     params: {
       a: 'bar',
       b: 2,
