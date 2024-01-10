@@ -2,8 +2,8 @@
 
 import landlubber from 'landlubber'
 
-import * as todo from './todo.js'
+import * as axios from './axios.js'
 
-const commands = [todo]
+const commands = [axios]
 
 await landlubber(commands).parse()

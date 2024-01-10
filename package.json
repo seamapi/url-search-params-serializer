@@ -1,7 +1,7 @@
 {
   "name": "@seamapi/url-search-params-serializer",
   "version": "1.0.0",
-  "description": "Serializes JavaScript objects to The URLSearchParams.",
+  "description": "Serializes JavaScript objects to URLSearchParams.",
   "type": "module",
   "main": "index.js",
   "types": "index.d.ts",
@@ -60,6 +60,7 @@
   "devDependencies": {
     "@types/node": "^20.8.10",
     "ava": "^6.0.1",
+    "axios": "^1.6.5",
     "c8": "^9.0.0",
     "del-cli": "^5.0.0",
     "eslint": "^8.9.0",

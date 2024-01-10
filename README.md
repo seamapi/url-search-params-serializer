@@ -3,11 +3,18 @@
 [![npm](https://img.shields.io/npm/v/@seamapi/url-search-params-serializer.svg)](https://www.npmjs.com/package/@seamapi/url-search-params-serializer)
 [![GitHub Actions](https://github.com/seamapi/url-search-params-serializer/actions/workflows/check.yml/badge.svg)](https://github.com/seamapi/url-search-params-serializer/actions/workflows/check.yml)
 
-Serializes JavaScript objects to The URLSearchParams.
+Serializes JavaScript objects to URLSearchParams.
 
 ## Description
 
-TODO
+Defines the standard for how Seam SDK and Seam API consumers
+should serialize objects to [URLSearchParams] in HTTP GET requests.
+
+Serves as a reference implementation for Seam SDKs in other languages.
+
+See the test for the [Serialization behavior](./test/serialization.test.ts).
+
+[URLSearchParams]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
 
 ## Installation
 
