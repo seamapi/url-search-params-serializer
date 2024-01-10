@@ -46,7 +46,7 @@
     "build:entrypoints": "npm run build:ts",
     "postbuild:entrypoints": "tsup",
     "build:ts": "tsc --project tsconfig.build.json",
-    "prebuild:ts": "del 'index.*' 'lib'",
+    "prebuild:ts": "del 'index.*' lib",
     "postbuild:ts": "tsc-alias --project tsconfig.build.json",
     "typecheck": "tsc",
     "test": "c8 ava",
