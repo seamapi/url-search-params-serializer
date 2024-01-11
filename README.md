@@ -25,7 +25,7 @@ to search parameters in a way supported by the Seam API.
 There is no single standard for this serialization.
 This module establishes the serialization standard adopted by the Seam API.
 
-### Why not use URLSearchParams?
+### Why not use [URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams)?
 
 Passing a raw object to URLSearchParams has unpredictable serialization behavior.
 
@@ -40,11 +40,10 @@ Passing a raw object to URLSearchParams has unpredictable serialization behavior
   Using qs would allow the SDK to send unsupported or incorrectly serialized parameter types to the API
   resulting in unexpected behavior.
 
-### Why not use Axios's default serializer?
+### Why not use the default [Axios](https://axios-http.com/) serializer?
 
-Using Axios's default serializer was the original approach,
-and to with the SDK
-however it has the similar issues noted above for URLSearchParams and qs.
+Using the default [Axios] serializer was the original approach,
+however it had similar issues to using URLSearchParams and qs as noted above.
 
 ## Installation
 
