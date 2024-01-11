@@ -35,7 +35,7 @@ Passing a raw object to URLSearchParams has unpredictable serialization behavior
 - Impractile as a reference implementation.
   Since qs enables complex, non-standard parsing and serialization,
   this makes ensuing SDK parity much harder.
-  User
+  Similarly, this puts an unreasonable burden on User's of the HTTP API or those implementing their own client.
 - The Seam API must ensure it handles a well defined set of non-string query parameters consistency.
   Using qs would allow the SDK to send unsupported or incorrectly serialized parameter types to the API
   resulting in unexpected behavior.
