@@ -45,6 +45,5 @@ export class UnserializableParamError extends Error {
   constructor(name: string, message: string) {
     super(`Could not serialize parameter: '${name}' ${message}`)
     this.name = this.constructor.name
-    Error.captureStackTrace(this, this.constructor)
   }
 }
