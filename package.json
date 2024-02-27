@@ -1,6 +1,6 @@
 {
   "name": "@seamapi/url-search-params-serializer",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Serializes JavaScript objects to URLSearchParams.",
   "type": "module",
   "main": "index.js",
