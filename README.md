@@ -21,7 +21,7 @@ Serialization uses
 [`URLSearchParams.toString()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toString#return_value)
 which encodes most non-alphanumeric characters.
 
-- The primitive types of `strings`, `number`, and `bigint` are serialized using `.toString()`.
+- The primitive types `string`, `number`, and `bigint` are serialized using `.toString()`.
 - The primitive `boolean` type is serialized using `.toString()` to `'true'` or `'false'`.
 - The primitive `null` and `undefined` values are removed,
   e.g., `{ foo: null, bar: undefined, baz: 1 }` serializes to `baz=1`.
