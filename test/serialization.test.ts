@@ -83,7 +83,7 @@ test('serializes Date', (t) => {
   )
 })
 
-test.only('serializes Temporal.Instant', (t) => {
+test('serializes Temporal.Instant', (t) => {
   t.is(
     serializeUrlSearchParams({
       foo: 1,
