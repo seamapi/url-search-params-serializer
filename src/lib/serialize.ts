@@ -1,3 +1,5 @@
+import { isDateLike } from './date.js'
+
 type Params = Record<string, unknown>
 
 export const serializeUrlSearchParams = (params: Params): string => {
@@ -38,6 +40,7 @@ const serialize = (k: string, v: unknown): string => {
   if (typeof v === 'number') return v.toString()
   if (typeof v === 'bigint') return v.toString()
   if (typeof v === 'boolean') return v.toString()
+  if (isDateLike(v)) return v.toISOString()
   throw new UnserializableParamError(k, `is a ${typeof v}`)
 }
 

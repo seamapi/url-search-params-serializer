@@ -75,6 +75,13 @@ test('cannot serialize single element array params with empty string', (t) => {
   })
 })
 
+test('serializes Date', (t) => {
+  t.is(
+    serializeUrlSearchParams({ foo: 1, now: new Date(1740422679000) }),
+    'foo=1&now=2025-02-24T18%3A44%3A39.000Z',
+  )
+})
+
 test('cannot serialize unserializable values', (t) => {
   t.throws(() => serializeUrlSearchParams({ foo: {} }), {
     instanceOf: UnserializableParamError,
