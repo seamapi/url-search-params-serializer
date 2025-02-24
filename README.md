@@ -48,7 +48,7 @@ the consumer parsing the string, it can be unambigously parsed back to the origi
     Otherwise, the serialization of `{ foo: [''] }` would conflict with `{ foo: [] }`.
     This serializer chooses to support the more common and more useful case of an empty array.
 - Serialization of objects and nested objects first serializes the keys
-- to dot-path format and then serializes the values as above, e.g.,
+  to dot-path format and then serializes the values as above, e.g.,
   `{ foo: 'a', bar: { baz: 'b', fizz: [1, 2] } }` serializes to
   `foo=a&bar.baz=b&bar.fizz=1&bar.fizz=2`.
 - Serialization of nested arrays or objects nested inside arrays
