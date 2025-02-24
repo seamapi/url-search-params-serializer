@@ -94,14 +94,54 @@ test('serializes Temporal.Instant', (t) => {
   )
 })
 
-test('cannot serialize unserializable values', (t) => {
-  t.throws(() => serializeUrlSearchParams({ foo: {} }), {
-    instanceOf: UnserializableParamError,
-  })
-  t.throws(() => serializeUrlSearchParams({ foo: { x: 2 } }), {
-    instanceOf: UnserializableParamError,
-  })
+test('serializes plain objects', (t) => {
+  t.is(
+    serializeUrlSearchParams({
+      foo: 1,
+      bar: { baz: 'a' },
+    }),
+    'bar.baz=a&foo=1',
+  )
+
+  t.is(
+    serializeUrlSearchParams({
+      foo: 1,
+      bar: { baz: { x: { z: 1 } } },
+    }),
+    'bar.baz.x.z=1&foo=1',
+  )
+
+  t.is(
+    serializeUrlSearchParams({
+      foo: 1,
+      bar: { baz: { x: { z: null } } },
+    }),
+    'foo=1',
+  )
+
+  t.is(
+    serializeUrlSearchParams({
+      foo: 1,
+      bar: { baz: [1, 'a'] },
+    }),
+    'bar.baz=1&bar.baz=a&foo=1',
+  )
+})
+
+test('cannot serialize functions', (t) => {
   t.throws(() => serializeUrlSearchParams({ foo: () => {} }), {
+    instanceOf: UnserializableParamError,
+  })
+})
+
+test('cannot serialize non-plain objects', (t) => {
+  class Foo {
+    bar: string
+    constructor() {
+      this.bar = 'a'
+    }
+  }
+  t.throws(() => serializeUrlSearchParams({ foo: new Foo() }), {
     instanceOf: UnserializableParamError,
   })
 })
@@ -117,6 +157,9 @@ test('cannot serialize array params with unserializable values', (t) => {
     instanceOf: UnserializableParamError,
   })
   t.throws(() => serializeUrlSearchParams({ bar: ['a', []] }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ bar: ['a', ['']] }), {
     instanceOf: UnserializableParamError,
   })
   t.throws(() => serializeUrlSearchParams({ bar: ['a', {}] }), {

@@ -25,6 +25,7 @@ export const handler: Handler<Options> = async ({ logger }) => {
       f: [],
       g: new Date(),
       h: Temporal.Now.instant(),
+      i: { foo: 1, bar: { baz: 2, fizz: [1, 'a'] } },
     },
   })
   logger.info({ data }, 'Response')

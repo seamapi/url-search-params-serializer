@@ -36,12 +36,20 @@ which encodes most non-alphanumeric characters.
   - The array `{ foo: [1, 2] }` serializes to `foo=1&foo=2`.
   - The single element array `{ foo: [1] }` serializes to `foo=1`.
   - The empty array `{ foo: [] }` serializes to `foo=`.
-  - Serialization of the single element array containing the empty string is not supported
-    and will throw an `UnserializableParamError`.
+  - Serialization of arrays containing `null` or `undefined` values
+    is not supported and will throw an `UnserializableParamError`.
+  - Serialization of the single element array containing the empty string
+    is not supported and will throw an `UnserializableParamError`.
     Otherwise, the serialization of `{ foo: [''] }` would conflict with `{ foo: [] }`.
     This serializer chooses to support the more common and more useful case of an empty array.
-- Serialization of functions or other objects is not supported
-  and will throw an `UnserializableParamError`.
+- Serialization of objects and nested objects first serializes the keys
+- to dot-path format and then serializes the values as above, e.g.,
+  `{ foo: 'a', bar: { baz: 'b', fizz: [1, 2] } }` serializes to
+  `foo=a&bar.baz=b&bar.fizz=1&bar.fizz=2`.
+- Serialization of nested arrays or objects nested inside arrays
+  is not supported and will throw an `UnserializableParamError`.
+- Serialization of functions or other objects is
+  is not supported and will throw an `UnserializableParamError`.
 
 ## Installation
 
