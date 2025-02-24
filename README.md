@@ -15,6 +15,32 @@ See this test for the [serialization behavior](./test/serialization.test.ts).
 
 [URLSearchParams]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
 
+### Serialization strategy
+
+Serialization uses
+[`URLSearchParams.toString()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toString#return_value)
+which encodes most non-alphanumeric characters.
+
+- The primitive types of `strings`, `number`, and `bigint` are serialized using `.toString()`.
+- The primitive `boolean` type is serialized using `.toString()` to `'true'` or `'false'`.
+- The primitive `null` and `undefined` values are removed,
+  e.g., `{ foo: null, bar: undefined, baz: 1 }` serializes to `baz=1`.
+- `Date` objects are detected and serialized using `Date.toISOString()`.
+- `Temporal.Instant` objects are detected and serialized by first converting them to `Date`
+  and then serializing the `Date` as above.
+- Arrays are serialized using
+  [`URLSearchParams.append()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/append):
+  - Array values are serialized as above.
+  - The array `{ foo: [1, 2] }` serializes to `foo=1&foo=2`.
+  - The single element array `{ foo: [1] }` serializes to `foo=1`.
+  - The empty array `{ foo: [] }` serializes to `foo=`.
+  - Serialization of the single element array containing the empty string is not supported
+    and will throw an `UnserializableParamError`.
+    Otherwise, the serialization of `{ foo: [''] }` would conflict with `{ foo: [] }`.
+    This serializer chooses to support the more common and more useful case of an empty array.
+- Serialization of functions or other objects is not supported
+  and will throw an `UnserializableParamError`.
+
 ## Motivation
 
 URL search parameters are strings, however the Seam API will parse parameters as complex types.
@@ -31,7 +57,7 @@ This module establishes the serialization standard adopted by the Seam API.
 ### Why not [qs](https://github.com/ljharb/qs)?
 
 - Not a zero-dependency module. Has quite a few dependency layers.
-- Impractile as a reference implementation.
+- Impractical as a reference implementation.
   qs enables complex, non-standard parsing and serialization,
   which makes ensuing SDK parity much harder.
   Similarly, this puts an unreasonable burden on user's of the HTTP API or those implementing their own client.
