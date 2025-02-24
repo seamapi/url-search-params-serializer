@@ -18,7 +18,7 @@ export const handler: Handler<Options> = async ({ logger }) => {
     paramsSerializer: serializeUrlSearchParams,
     params: {
       a: 'bar',
-      b: 2,
+      b: 2.3,
       c: true,
       d: null,
       e: ['a', 2],
