@@ -26,7 +26,8 @@ which encodes most non-alphanumeric characters.
   e.g., `{ foo: true, bar: false }` serializes to `foo=true&bar=false`.
 - The primitive `null` and `undefined` values are removed,
   e.g., `{ foo: null, bar: undefined, baz: 1 }` serializes to `baz=1`.
-- `Date` objects are detected and serialized using `Date.toISOString()`.
+- `Date` objects are detected and serialized using `Date.toISOString()`,
+  e.g., `{ foo: new Date(0) }` serializes to `foo=1970-01-01T00%3A00%3A00.000Z`.
 - `Temporal.Instant` objects are detected and serialized by first converting them to `Date`
   and then serializing the `Date` as above.
 - Arrays are serialized using

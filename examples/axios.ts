@@ -1,3 +1,4 @@
+import { Temporal } from '@js-temporal/polyfill'
 import axios from 'axios'
 import type { Builder, Command, Describe, Handler } from 'landlubber'
 
@@ -22,6 +23,8 @@ export const handler: Handler<Options> = async ({ logger }) => {
       d: null,
       e: ['a', 2],
       f: [],
+      g: new Date(),
+      h: Temporal.Now.instant(),
     },
   })
   logger.info({ data }, 'Response')
