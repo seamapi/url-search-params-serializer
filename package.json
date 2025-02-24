@@ -68,6 +68,7 @@
     "npm": ">= 9.0.0"
   },
   "devDependencies": {
+    "@js-temporal/polyfill": "^0.4.4",
     "@types/node": "^20.8.10",
     "ava": "^6.0.1",
     "axios": "^1.6.5",

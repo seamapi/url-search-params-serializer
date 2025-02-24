@@ -13,3 +13,20 @@ export const isDateLike = (v: unknown): v is DateLike => {
   }
   return false
 }
+
+interface TemporalInstantLike {
+  epochMilliseconds: number
+}
+
+export const isTemporalInstantLike = (v: unknown): v is TemporalInstantLike => {
+  if (v == null) return false
+  if (typeof v !== 'object') return false
+  if (!('epochMilliseconds' in v)) return false
+  try {
+    if (typeof v.epochMilliseconds !== 'number') return false
+    if (isNaN(v.epochMilliseconds)) return false
+    return true
+  } catch {
+    return false
+  }
+}

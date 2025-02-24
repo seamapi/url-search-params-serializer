@@ -1,4 +1,4 @@
-import { isDateLike } from './date.js'
+import { isDateLike, isTemporalInstantLike } from './date.js'
 
 type Params = Record<string, unknown>
 
@@ -41,6 +41,9 @@ const serialize = (k: string, v: unknown): string => {
   if (typeof v === 'bigint') return v.toString()
   if (typeof v === 'boolean') return v.toString()
   if (isDateLike(v)) return v.toISOString()
+  if (isTemporalInstantLike(v)) {
+    return new Date(v.epochMilliseconds).toISOString()
+  }
   throw new UnserializableParamError(k, `is a ${typeof v}`)
 }
 
