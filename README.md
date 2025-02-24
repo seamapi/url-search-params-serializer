@@ -15,34 +15,31 @@ See this test for the [serialization behavior](./test/serialization.test.ts).
 
 [URLSearchParams]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
 
-## Motivation
+### Serialization strategy
 
-URL search parameters are strings, however the Seam API will parse parameters as complex types.
-The Seam SDK must accept the complex types as input and serialize these
-to search parameters in a way supported by the Seam API.
+Serialization uses
+[`URLSearchParams.toString()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toString#return_value)
+which encodes most non-alphanumeric characters.
 
-There is no single standard for this serialization.
-This module establishes the serialization standard adopted by the Seam API.
-
-### Why not use [URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams)?
-
-- Passing a raw object to URLSearchParams has unpredictable serialization behavior.
-
-### Why not [qs](https://github.com/ljharb/qs)?
-
-- Not a zero-dependency module. Has quite a few dependency layers.
-- Impractile as a reference implementation.
-  qs enables complex, non-standard parsing and serialization,
-  which makes ensuing SDK parity much harder.
-  Similarly, this puts an unreasonable burden on user's of the HTTP API or those implementing their own client.
-- The Seam API must ensure it handles a well defined set of non-string query parameters consistency.
-  Using qs would allow the SDK to send unsupported or incorrectly serialized parameter types to the API
-  resulting in unexpected behavior.
-
-### Why not use the default [Axios](https://axios-http.com/) serializer?
-
-- Using the default [Axios] serializer was the original approach,
-  however it had similar issues to using URLSearchParams and qs as noted above.
+- The primitive types `string`, `number`, and `bigint` are serialized using `.toString()`.
+- The primitive `boolean` type is serialized using `.toString()` to `'true'` or `'false'`.
+- The primitive `null` and `undefined` values are removed,
+  e.g., `{ foo: null, bar: undefined, baz: 1 }` serializes to `baz=1`.
+- `Date` objects are detected and serialized using `Date.toISOString()`.
+- `Temporal.Instant` objects are detected and serialized by first converting them to `Date`
+  and then serializing the `Date` as above.
+- Arrays are serialized using
+  [`URLSearchParams.append()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/append):
+  - Array values are serialized as above.
+  - The array `{ foo: [1, 2] }` serializes to `foo=1&foo=2`.
+  - The single element array `{ foo: [1] }` serializes to `foo=1`.
+  - The empty array `{ foo: [] }` serializes to `foo=`.
+  - Serialization of the single element array containing the empty string is not supported
+    and will throw an `UnserializableParamError`.
+    Otherwise, the serialization of `{ foo: [''] }` would conflict with `{ foo: [] }`.
+    This serializer chooses to support the more common and more useful case of an empty array.
+- Serialization of functions or other objects is not supported
+  and will throw an `UnserializableParamError`.
 
 ## Installation
 
@@ -110,6 +107,35 @@ const { data } = await client.get('/search', {
 ```
 
 [Axios]: https://axios-http.com/
+
+## Motivation
+
+URL search parameters are strings, however the Seam API will parse parameters as complex types.
+The Seam SDK must accept the complex types as input and serialize these
+to search parameters in a way supported by the Seam API.
+
+There is no single standard for this serialization.
+This module establishes the serialization standard adopted by the Seam API.
+
+### Why not use [URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams)?
+
+- Passing a raw object to URLSearchParams has unpredictable serialization behavior.
+
+### Why not [qs](https://github.com/ljharb/qs)?
+
+- Not a zero-dependency module. Has quite a few dependency layers.
+- Impractical as a reference implementation.
+  qs enables complex, non-standard parsing and serialization,
+  which makes ensuing SDK parity much harder.
+  Similarly, this puts an unreasonable burden on user's of the HTTP API or those implementing their own client.
+- The Seam API must ensure it handles a well defined set of non-string query parameters consistency.
+  Using qs would allow the SDK to send unsupported or incorrectly serialized parameter types to the API
+  resulting in unexpected behavior.
+
+### Why not use the default [Axios](https://axios-http.com/) serializer?
+
+- Using the default [Axios] serializer was the original approach,
+  however it had similar issues to using URLSearchParams and qs as noted above.
 
 ## Development and Testing
 
