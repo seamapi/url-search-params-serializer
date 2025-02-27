@@ -1,4 +1,5 @@
 import { isDateLike, isTemporalInstantLike } from './date.js'
+import { isPlainObject } from './object.js'
 
 type Params = Record<string, unknown>
 
@@ -12,7 +13,24 @@ export const updateUrlSearchParams = (
   searchParams: URLSearchParams,
   params: Record<string, unknown>,
 ): void => {
-  for (const [name, value] of Object.entries(params)) {
+  nestedUpdateUrlSearchParams(searchParams, params, [])
+  searchParams.sort()
+}
+
+const nestedUpdateUrlSearchParams = (
+  searchParams: URLSearchParams,
+  params: Record<string, unknown>,
+  path: string[],
+): void => {
+  for (const [key, value] of Object.entries(params)) {
+    const currentPath = [...path, key]
+    if (isPlainObject(value)) {
+      nestedUpdateUrlSearchParams(searchParams, value, currentPath)
+      return
+    }
+
+    const name = currentPath.join('.')
+
     if (value == null) continue
 
     if (Array.isArray(value)) {
@@ -31,8 +49,6 @@ export const updateUrlSearchParams = (
 
     searchParams.set(name, serialize(name, value))
   }
-
-  searchParams.sort()
 }
 
 const serialize = (k: string, v: unknown): string => {

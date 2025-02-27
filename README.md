@@ -21,11 +21,18 @@ Serialization uses
 [`URLSearchParams.toString()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toString#return_value)
 which encodes most non-alphanumeric characters.
 
-- The primitive types `string`, `number`, and `bigint` are serialized using `.toString()`.
-- The primitive `boolean` type is serialized using `.toString()` to `'true'` or `'false'`.
+Serialization is guaranteed to be well-defined within each type, i.e.,
+if the type of value for a given key in the query string is fixed and known by
+the consumer parsing the string, it can be unambigously parsed back to the original primitive value.
+
+- The primitive type `string` is serialized using `.toString()`.
+- The primitive `number` and `bigint` types are serialized using `.toString()`.
+- The primitive `boolean` type is serialized using `.toString()`,
+  e.g., `{ foo: true, bar: false }` serializes to `foo=true&bar=false`.
 - The primitive `null` and `undefined` values are removed,
   e.g., `{ foo: null, bar: undefined, baz: 1 }` serializes to `baz=1`.
-- `Date` objects are detected and serialized using `Date.toISOString()`.
+- `Date` objects are detected and serialized using `Date.toISOString()`,
+  e.g., `{ foo: new Date(0) }` serializes to `foo=1970-01-01T00%3A00%3A00.000Z`.
 - `Temporal.Instant` objects are detected and serialized by first converting them to `Date`
   and then serializing the `Date` as above.
 - Arrays are serialized using
@@ -34,12 +41,20 @@ which encodes most non-alphanumeric characters.
   - The array `{ foo: [1, 2] }` serializes to `foo=1&foo=2`.
   - The single element array `{ foo: [1] }` serializes to `foo=1`.
   - The empty array `{ foo: [] }` serializes to `foo=`.
-  - Serialization of the single element array containing the empty string is not supported
-    and will throw an `UnserializableParamError`.
+  - Serialization of arrays containing `null` or `undefined` values
+    is not supported and will throw an `UnserializableParamError`.
+  - Serialization of the single element array containing the empty string
+    is not supported and will throw an `UnserializableParamError`.
     Otherwise, the serialization of `{ foo: [''] }` would conflict with `{ foo: [] }`.
     This serializer chooses to support the more common and more useful case of an empty array.
-- Serialization of functions or other objects is not supported
-  and will throw an `UnserializableParamError`.
+- Serialization of objects and nested objects first serializes the keys
+  to dot-path format and then serializes the values as above, e.g.,
+  `{ foo: 'a', bar: { baz: 'b', fizz: [1, 2] } }` serializes to
+  `foo=a&bar.baz=b&bar.fizz=1&bar.fizz=2`.
+- Serialization of nested arrays or objects nested inside arrays
+  is not supported and will throw an `UnserializableParamError`.
+- Serialization of functions or other objects is
+  is not supported and will throw an `UnserializableParamError`.
 
 ## Installation
 
