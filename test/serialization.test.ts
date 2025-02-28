@@ -32,9 +32,9 @@ test('removes undefined params', (t) => {
   t.is(serializeUrlSearchParams({ foo: 1, bar: undefined }), 'foo=1')
 })
 
-test('removes null params', (t) => {
-  t.is(serializeUrlSearchParams({ bar: null }), '')
-  t.is(serializeUrlSearchParams({ foo: 1, bar: null }), 'foo=1')
+test('serializes null params', (t) => {
+  t.is(serializeUrlSearchParams({ bar: null }), 'bar=')
+  t.is(serializeUrlSearchParams({ foo: 1, bar: null }), 'bar=&foo=1')
 })
 
 test('serializes empty array params', (t) => {
@@ -116,7 +116,7 @@ test('serializes plain objects', (t) => {
       foo: 1,
       bar: { baz: { x: { z: null } } },
     }),
-    'foo=1',
+    'bar.baz.x.z=&foo=1',
   )
 
   t.is(

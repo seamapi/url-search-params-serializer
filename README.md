@@ -29,8 +29,10 @@ the consumer parsing the string, it can be unambigously parsed back to the origi
 - The primitive `number` and `bigint` types are serialized using `.toString()`.
 - The primitive `boolean` type is serialized using `.toString()`,
   e.g., `{ foo: true, bar: false }` serializes to `foo=true&bar=false`.
-- The primitive `null` and `undefined` values are removed,
-  e.g., `{ foo: null, bar: undefined, baz: 1 }` serializes to `baz=1`.
+- The primitive `null` is serialized to an empty value,
+  e.g., `{ foo: null }` serializes to `foo=`.
+- and `undefined` values are removed,
+  e.g., `{ foo: undefined, bar: 1 }` serializes to `baz=1`.
 - `Date` objects are detected and serialized using `Date.toISOString()`,
   e.g., `{ foo: new Date(0) }` serializes to `foo=1970-01-01T00%3A00%3A00.000Z`.
 - `Temporal.Instant` objects are detected and serialized by first converting them to `Date`

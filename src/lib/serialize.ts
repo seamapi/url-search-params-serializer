@@ -31,7 +31,10 @@ const nestedUpdateUrlSearchParams = (
 
     const name = currentPath.join('.')
 
-    if (value == null) continue
+    if (value == null) {
+      if (value === null) searchParams.set(name, '')
+      continue
+    }
 
     if (Array.isArray(value)) {
       if (value.length === 0) searchParams.set(name, '')
