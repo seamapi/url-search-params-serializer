@@ -56,18 +56,6 @@ test('serializes array params with many values', (t) => {
     serializeUrlSearchParams({ foo: 1, bar: ['null', '2', 'undefined'] }),
     'bar=null&bar=2&bar=undefined&foo=1',
   )
-  t.is(
-    serializeUrlSearchParams({ foo: 1, bar: ['', '', ''] }),
-    'bar=&bar=&bar=&foo=1',
-  )
-  t.is(
-    serializeUrlSearchParams({ foo: 1, bar: ['', 'a', '2'] }),
-    'bar=&bar=a&bar=2&foo=1',
-  )
-  t.is(
-    serializeUrlSearchParams({ foo: 1, bar: ['', 'a', ''] }),
-    'bar=&bar=a&bar=&foo=1',
-  )
 })
 
 test('cannot serialize single element array params with empty string', (t) => {
@@ -169,6 +157,15 @@ test('cannot serialize array params with unserializable values', (t) => {
     instanceOf: UnserializableParamError,
   })
   t.throws(() => serializeUrlSearchParams({ bar: ['a', () => {}] }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: 1, bar: ['', 'a', ''] }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: 1, bar: ['', 'a', '2'] }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: 1, bar: ['', '', ''] }), {
     instanceOf: UnserializableParamError,
   })
 })
