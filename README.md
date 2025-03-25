@@ -21,10 +21,6 @@ Serialization uses
 [`URLSearchParams.toString()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toString#return_value)
 which encodes most non-alphanumeric characters.
 
-Serialization is guaranteed to be well-defined within each type, i.e.,
-if the type of value for a given key in the query string is fixed and known by
-the consumer parsing the string, it can be unambigously parsed back to the original primitive value.
-
 - The primitive `null` is serialized to an empty value,
   e.g., `{ foo: null }` serializes to `foo=`.
 - Any `undefined` values are removed,
@@ -66,6 +62,39 @@ the consumer parsing the string, it can be unambigously parsed back to the origi
   is not supported and will throw an `UnserializableParamError`.
 - Serialization of functions or other objects is
   is not supported and will throw an `UnserializableParamError`.
+
+### Compatible parsing strategy
+
+Serialization is guaranteed to be well-defined within each type, i.e.,
+if the value-type for a given key in the query string is fixed and known by
+the consumer parsing the string, it can be unambigously parsed back to the original primitive value:
+
+- A parser can implement a inverse function to the serialization if it uses a schema which,
+  for each node, defines a type matching exactly one of the primitive or nested types below.
+- Any node may be marked optional, i.e., `undefined`, which corresponds to the absence of the key in the query string.
+- The parser may choose `Temporal.Instant` as an equivalent alternative to `Date`.
+- Object keys must not include a `.`.
+
+##### Primitive
+
+- `string | null`.
+  - Excludes zero-length strings.
+- `number | null`.
+- `bigint | null`.
+- `boolean | null`.
+- `Date | null`.
+- `Array<string | number | bigint | boolean | Date>`.
+  - Excludes zero-length strings.
+  - Arrays must use a single value-type.
+  - Otherwise, the array may be a tuple which may use a different value-type per slot.
+
+#### Nested
+
+- `object | null`.
+  - Must meet the same constraints as the top level schema.
+- `Record | null`.
+  - The record type must use a `string` type for the key,
+    and a single primitive or single nested type for the value.
 
 ## Installation
 
