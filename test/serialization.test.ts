@@ -110,6 +110,15 @@ test('serializes plain objects', (t) => {
   )
 })
 
+test('cannot serialize keys containing a .', (t) => {
+  t.throws(() => serializeUrlSearchParams({ 'foo.bar': 1 }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: { 'bar.baz': 1 } }), {
+    instanceOf: UnserializableParamError,
+  })
+})
+
 test('cannot serialize functions', (t) => {
   t.throws(() => serializeUrlSearchParams({ foo: () => {} }), {
     instanceOf: UnserializableParamError,

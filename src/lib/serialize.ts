@@ -23,6 +23,13 @@ const nestedUpdateUrlSearchParams = (
   path: string[],
 ): void => {
   for (const [key, value] of Object.entries(params)) {
+    if (key.includes('.')) {
+      throw new UnserializableParamError(
+        key,
+        'contains one or more dots "." in its name which is unsupported',
+      )
+    }
+
     const currentPath = [...path, key]
     if (isPlainObject(value)) {
       nestedUpdateUrlSearchParams(searchParams, value, currentPath)
