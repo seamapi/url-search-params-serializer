@@ -58,12 +58,6 @@ test('serializes array params with many values', (t) => {
   )
 })
 
-test('cannot serialize single element array params with empty string', (t) => {
-  t.throws(() => serializeUrlSearchParams({ foo: [''] }), {
-    instanceOf: UnserializableParamError,
-  })
-})
-
 test('serializes Date', (t) => {
   t.is(
     serializeUrlSearchParams({ foo: 1, now: new Date(1740422679000) }),
@@ -135,6 +129,9 @@ test('cannot serialize non-plain objects', (t) => {
 })
 
 test('cannot serialize array params with unserializable values', (t) => {
+  t.throws(() => serializeUrlSearchParams({ foo: [''] }), {
+    instanceOf: UnserializableParamError,
+  })
   t.throws(() => serializeUrlSearchParams({ bar: ['a', null] }), {
     instanceOf: UnserializableParamError,
   })
