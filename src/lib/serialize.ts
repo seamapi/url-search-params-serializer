@@ -1,7 +1,7 @@
 import { isDateLike, isTemporalInstantLike } from './date.js'
 import { isPlainObject } from './object.js'
 
-type Params = Record<string, unknown>
+export type Params = Record<string, unknown>
 
 export const serializeUrlSearchParams = (params: Params): string => {
   const searchParams = new URLSearchParams()
