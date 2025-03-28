@@ -23,6 +23,13 @@ const nestedUpdateUrlSearchParams = (
   path: string[],
 ): void => {
   for (const [key, value] of Object.entries(params)) {
+    if (key.includes('.')) {
+      throw new UnserializableParamError(
+        key,
+        'contains one or more dots "." in its name which is unsupported',
+      )
+    }
+
     const currentPath = [...path, key]
     if (isPlainObject(value)) {
       nestedUpdateUrlSearchParams(searchParams, value, currentPath)
@@ -31,14 +38,28 @@ const nestedUpdateUrlSearchParams = (
 
     const name = currentPath.join('.')
 
-    if (value == null) continue
+    if (value == null && value !== null) {
+      continue
+    }
 
     if (Array.isArray(value)) {
       if (value.length === 0) searchParams.set(name, '')
       if (value.length === 1 && value[0] === '') {
         throw new UnserializableParamError(
           name,
-          `is a single element array containing the empty string which is unsupported because it serializes to the empty array`,
+          'is a single element array containing the empty string which is unsupported',
+        )
+      }
+      if (value.some((v) => v === '')) {
+        throw new UnserializableParamError(
+          name,
+          'is an array containing the empty string which is unsupported',
+        )
+      }
+      if (value.some((v) => v == null)) {
+        throw new UnserializableParamError(
+          name,
+          'is an array containing null or undefined values which is unsupported',
         )
       }
       for (const v of value) {
@@ -52,7 +73,16 @@ const nestedUpdateUrlSearchParams = (
 }
 
 const serialize = (k: string, v: unknown): string => {
-  if (typeof v === 'string') return v.toString()
+  if (v === null) return ''
+  if (typeof v === 'string') {
+    if (v.length === 0) {
+      throw new UnserializableParamError(
+        k,
+        'is the empty string which is unsupported',
+      )
+    }
+    return v.toString()
+  }
   if (typeof v === 'number') return v.toString()
   if (typeof v === 'bigint') return v.toString()
   if (typeof v === 'boolean') return v.toString()

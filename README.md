@@ -21,16 +21,18 @@ Serialization uses
 [`URLSearchParams.toString()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toString#return_value)
 which encodes most non-alphanumeric characters.
 
-Serialization is guaranteed to be well-defined within each type, i.e.,
-if the type of value for a given key in the query string is fixed and known by
-the consumer parsing the string, it can be unambigously parsed back to the original primitive value.
-
+- The primitive `null` is serialized to an empty value,
+  e.g., `{ foo: null }` serializes to `foo=`.
+- Any `undefined` values are removed,
+  e.g., `{ foo: undefined, bar: 1 }` serializes to `bar=1`.
 - The primitive type `string` is serialized using `.toString()`.
+  - Serialization of the empty string
+    is not supported and will throw an `UnserializableParamError`.
+    Otherwise, the serialization of `{ foo: null }` would conflict with `{ foo: '' }`.
+    This serializer chooses to support the more common and more useful case of `null`.
 - The primitive `number` and `bigint` types are serialized using `.toString()`.
 - The primitive `boolean` type is serialized using `.toString()`,
   e.g., `{ foo: true, bar: false }` serializes to `foo=true&bar=false`.
-- The primitive `null` and `undefined` values are removed,
-  e.g., `{ foo: null, bar: undefined, baz: 1 }` serializes to `baz=1`.
 - `Date` objects are detected and serialized using `Date.toISOString()`,
   e.g., `{ foo: new Date(0) }` serializes to `foo=1970-01-01T00%3A00%3A00.000Z`.
 - `Temporal.Instant` objects are detected and serialized by first converting them to `Date`
@@ -41,9 +43,12 @@ the consumer parsing the string, it can be unambigously parsed back to the origi
   - The array `{ foo: [1, 2] }` serializes to `foo=1&foo=2`.
   - The single element array `{ foo: [1] }` serializes to `foo=1`.
   - The empty array `{ foo: [] }` serializes to `foo=`.
+    As this serialization overlaps with `null`, parser implementations are advised
+    not to support nullable array parameters and parse this as the empty array.
+  - To support typed tuples, serialization of arrays containing mixed values is allowed.
   - Serialization of arrays containing `null` or `undefined` values
     is not supported and will throw an `UnserializableParamError`.
-  - Serialization of the single element array containing the empty string
+  - Serialization of arrays containing the empty string
     is not supported and will throw an `UnserializableParamError`.
     Otherwise, the serialization of `{ foo: [''] }` would conflict with `{ foo: [] }`.
     This serializer chooses to support the more common and more useful case of an empty array.
@@ -51,10 +56,45 @@ the consumer parsing the string, it can be unambigously parsed back to the origi
   to dot-path format and then serializes the values as above, e.g.,
   `{ foo: 'a', bar: { baz: 'b', fizz: [1, 2] } }` serializes to
   `foo=a&bar.baz=b&bar.fizz=1&bar.fizz=2`.
+- Serialization of keys containing a `.`
+  is not supported and will throw an `UnserializableParamError`.
 - Serialization of nested arrays or objects nested inside arrays
   is not supported and will throw an `UnserializableParamError`.
 - Serialization of functions or other objects is
   is not supported and will throw an `UnserializableParamError`.
+
+### Compatible parsing strategy
+
+Serialization is guaranteed to be well-defined within each type, i.e.,
+if the value-type for a given key in the query string is fixed and known by
+the consumer parsing the string, it can be unambigously parsed back to the original primitive value:
+
+- A parser can implement a inverse function to the serialization if it uses a schema which,
+  for each node, defines a type matching exactly one of the primitive or nested types below.
+- Any node may be marked optional, i.e., `undefined`, which corresponds to the absence of the key in the query string.
+- The parser may choose `Temporal.Instant` as an equivalent alternative to `Date`.
+- Object keys must not include a `.`.
+
+##### Primitive
+
+- `string | null`.
+  - Excludes zero-length strings.
+- `number | null`.
+- `bigint | null`.
+- `boolean | null`.
+- `Date | null`.
+- `Array<string | number | bigint | boolean | Date>`.
+  - Excludes zero-length strings.
+  - Arrays must use a single value-type.
+  - Otherwise, the array may be a tuple which may use a different value-type per slot.
+
+#### Nested
+
+- `object | null`.
+  - Must meet the same constraints as the top level schema.
+- `Record | null`.
+  - The record type must use a `string` type for the key,
+    and a single primitive or single nested type for the value.
 
 ## Installation
 
