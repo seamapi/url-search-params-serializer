@@ -125,6 +125,18 @@ test('cannot serialize functions', (t) => {
   })
 })
 
+test('cannot serialize number pointers', (t) => {
+  t.throws(() => serializeUrlSearchParams({ foo: Infinity }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: -Infinity }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: -NaN }), {
+    instanceOf: UnserializableParamError,
+  })
+})
+
 test('cannot serialize non-plain objects', (t) => {
   class Foo {
     bar: string

@@ -62,6 +62,8 @@ which encodes most non-alphanumeric characters.
   is not supported and will throw an `UnserializableParamError`.
 - Serialization of functions or other objects is
   is not supported and will throw an `UnserializableParamError`.
+- Serialization of `NaN`, `Infinity`, and `-Infinity`
+  is not supported and will throw an `UnserializableParamError`.
 
 ### Compatible parsing strategy
 

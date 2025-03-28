@@ -83,7 +83,19 @@ const serialize = (k: string, v: unknown): string => {
     }
     return v.toString()
   }
-  if (typeof v === 'number') return v.toString()
+  if (typeof v === 'number') {
+    if (
+      isNaN(v) ||
+      v === Infinity ||
+      v === -Infinity ||
+      v.toString() === 'NaN' ||
+      v.toString() === 'Infinity' ||
+      v.toString() === '-Infinity'
+    ) {
+      throw new UnserializableParamError(k, `is ${v}`)
+    }
+    return v.toString()
+  }
   if (typeof v === 'bigint') return v.toString()
   if (typeof v === 'boolean') return v.toString()
   if (isDateLike(v)) return v.toISOString()
