@@ -43,7 +43,11 @@ const nestedUpdateUrlSearchParams = (
     }
 
     if (Array.isArray(value)) {
-      if (value.length === 0) searchParams.set(name, '')
+      if (value.length === 0) {
+        searchParams.set(name, '')
+        continue
+      }
+
       if (value.length === 1 && value[0] === '') {
         throw new UnserializableParamError(
           name,
