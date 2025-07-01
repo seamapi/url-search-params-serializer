@@ -32,9 +32,9 @@ test('removes undefined params', (t) => {
   t.is(serializeUrlSearchParams({ foo: 1, bar: undefined }), 'foo=1')
 })
 
-test('removes null params', (t) => {
-  t.is(serializeUrlSearchParams({ bar: null }), '')
-  t.is(serializeUrlSearchParams({ foo: 1, bar: null }), 'foo=1')
+test('serializes null params', (t) => {
+  t.is(serializeUrlSearchParams({ bar: null }), 'bar=')
+  t.is(serializeUrlSearchParams({ foo: 1, bar: null }), 'bar=&foo=1')
 })
 
 test('serializes empty array params', (t) => {
@@ -56,24 +56,6 @@ test('serializes array params with many values', (t) => {
     serializeUrlSearchParams({ foo: 1, bar: ['null', '2', 'undefined'] }),
     'bar=null&bar=2&bar=undefined&foo=1',
   )
-  t.is(
-    serializeUrlSearchParams({ foo: 1, bar: ['', '', ''] }),
-    'bar=&bar=&bar=&foo=1',
-  )
-  t.is(
-    serializeUrlSearchParams({ foo: 1, bar: ['', 'a', '2'] }),
-    'bar=&bar=a&bar=2&foo=1',
-  )
-  t.is(
-    serializeUrlSearchParams({ foo: 1, bar: ['', 'a', ''] }),
-    'bar=&bar=a&bar=&foo=1',
-  )
-})
-
-test('cannot serialize single element array params with empty string', (t) => {
-  t.throws(() => serializeUrlSearchParams({ foo: [''] }), {
-    instanceOf: UnserializableParamError,
-  })
 })
 
 test('serializes Date', (t) => {
@@ -116,7 +98,7 @@ test('serializes plain objects', (t) => {
       foo: 1,
       bar: { baz: { x: { z: null } } },
     }),
-    'foo=1',
+    'bar.baz.x.z=&foo=1',
   )
 
   t.is(
@@ -128,8 +110,29 @@ test('serializes plain objects', (t) => {
   )
 })
 
+test('cannot serialize keys containing a .', (t) => {
+  t.throws(() => serializeUrlSearchParams({ 'foo.bar': 1 }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: { 'bar.baz': 1 } }), {
+    instanceOf: UnserializableParamError,
+  })
+})
+
 test('cannot serialize functions', (t) => {
   t.throws(() => serializeUrlSearchParams({ foo: () => {} }), {
+    instanceOf: UnserializableParamError,
+  })
+})
+
+test('cannot serialize number pointers', (t) => {
+  t.throws(() => serializeUrlSearchParams({ foo: Infinity }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: -Infinity }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: -NaN }), {
     instanceOf: UnserializableParamError,
   })
 })
@@ -147,6 +150,9 @@ test('cannot serialize non-plain objects', (t) => {
 })
 
 test('cannot serialize array params with unserializable values', (t) => {
+  t.throws(() => serializeUrlSearchParams({ foo: [''] }), {
+    instanceOf: UnserializableParamError,
+  })
   t.throws(() => serializeUrlSearchParams({ bar: ['a', null] }), {
     instanceOf: UnserializableParamError,
   })
@@ -169,6 +175,15 @@ test('cannot serialize array params with unserializable values', (t) => {
     instanceOf: UnserializableParamError,
   })
   t.throws(() => serializeUrlSearchParams({ bar: ['a', () => {}] }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: 1, bar: ['', 'a', ''] }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: 1, bar: ['', 'a', '2'] }), {
+    instanceOf: UnserializableParamError,
+  })
+  t.throws(() => serializeUrlSearchParams({ foo: 1, bar: ['', '', ''] }), {
     instanceOf: UnserializableParamError,
   })
 })
