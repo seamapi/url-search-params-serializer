@@ -4,7 +4,6 @@ import type { Builder, Command, Describe, Handler } from 'landlubber'
 
 import { serializeUrlSearchParams } from '@seamapi/url-search-params-serializer'
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Options {}
 
 export const command: Command = 'axios'
