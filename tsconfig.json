@@ -1,12 +1,14 @@
 {
-  "$schema": "https://json.schemastore.org/tsconfig",
+  "$schema": "https://json.schemastore.org/tsconfig.json",
   "compilerOptions": {
     "composite": true,
     "noEmit": true,
+    "skipLibCheck": true,
     "strict": true,
     "module": "nodenext",
     "esModuleInterop": true,
-    "target": "es2021",
+    "moduleDetection": "force",
+    "target": "es2023",
     "jsx": "react-jsx",
     "sourceMap": true,
     "newLine": "lf",
@@ -29,5 +31,11 @@
     }
   },
   "files": ["src/index.ts"],
-  "include": ["src/**/*", "test/**/*", "examples/**/*", "tsup.config.ts"]
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "examples/**/*",
+    "eslint.config.ts",
+    "tsup.config.ts"
+  ]
 }

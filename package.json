@@ -37,6 +37,7 @@
     "lib",
     "src",
     "dist",
+    "!test",
     "!**/*.test.ts"
   ],
   "scripts": {
@@ -54,37 +55,38 @@
     "test:update": "ava --update-snapshots",
     "test:watch": "ava --watch",
     "test:debug": "ava debug --break",
-    "lint": "eslint --ignore-path .gitignore .",
-    "prelint": "prettier --check --ignore-path .gitignore .",
+    "lint": "eslint .",
+    "postlint": "prettier --check --ignore-path .gitignore .",
     "postversion": "git push --follow-tags",
     "example": "tsx examples",
     "example:inspect": "tsx --inspect examples",
-    "format": "eslint --ignore-path .gitignore --fix .",
-    "preformat": "prettier --write --ignore-path .gitignore .",
+    "format": "prettier --write --ignore-path .gitignore .",
+    "preformat": "eslint --fix .",
     "report": "c8 report"
   },
   "engines": {
-    "node": ">=18.12.0",
-    "npm": ">= 9.0.0"
+    "node": ">=20.9.0",
+    "npm": ">=10.1.0"
   },
   "devDependencies": {
     "@js-temporal/polyfill": "^0.4.4",
-    "@types/node": "^20.8.10",
+    "@swc/core": "^1.11.29",
+    "@types/node": "^22.15.21",
     "ava": "^6.0.1",
     "axios": "^1.6.5",
     "c8": "^10.1.2",
-    "del-cli": "^5.0.0",
-    "eslint": "^8.9.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-config-standard-with-typescript": "^43.0.0",
-    "eslint-plugin-simple-import-sort": "^12.0.0",
-    "eslint-plugin-unused-imports": "^3.0.0",
+    "del-cli": "^6.0.0",
+    "eslint": "^9.31.0",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-unused-imports": "^4.1.4",
+    "jiti": "^2.4.2",
     "landlubber": "^2.0.0",
+    "neostandard": "^0.12.2",
     "prettier": "^3.0.0",
     "tsc-alias": "^1.8.2",
     "tsup": "^8.0.1",
     "tsx": "^4.6.2",
-    "typescript": "~5.3.3"
+    "typescript": "^5.8.3"
   }
 }
