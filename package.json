@@ -69,7 +69,7 @@
     "npm": ">=10.1.0"
   },
   "devDependencies": {
-    "@js-temporal/polyfill": "^0.4.4",
+    "@js-temporal/polyfill": "^0.5.1",
     "@swc/core": "^1.11.29",
     "@types/node": "^22.15.21",
     "ava": "^6.0.1",
