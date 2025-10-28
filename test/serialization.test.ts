@@ -149,6 +149,12 @@ test('cannot serialize non-plain objects', (t) => {
   })
 })
 
+test('cannot serialize the empty string', (t) => {
+  t.throws(() => serializeUrlSearchParams({ foo: ''}), {
+    instanceOf: UnserializableParamError,
+  })
+})
+
 test('cannot serialize array params with unserializable values', (t) => {
   t.throws(() => serializeUrlSearchParams({ foo: [''] }), {
     instanceOf: UnserializableParamError,
