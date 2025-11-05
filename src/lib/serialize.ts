@@ -33,7 +33,7 @@ const nestedUpdateUrlSearchParams = (
     const currentPath = [...path, key]
     if (isPlainObject(value)) {
       nestedUpdateUrlSearchParams(searchParams, value, currentPath)
-      return
+      continue
     }
 
     const name = currentPath.join('.')
