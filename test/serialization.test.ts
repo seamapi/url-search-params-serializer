@@ -112,7 +112,7 @@ test('serializes plain objects', (t) => {
   t.is(
     serializeUrlSearchParams({
       foo: {},
-      bar: { baz: { x: { z: null, t: {} } } },
+      bar: { baz: { x: { z: null, t: {} }, q: {} },
     }),
     'bar.baz.x.z=',
   )
