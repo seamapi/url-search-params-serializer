@@ -108,6 +108,14 @@ test('serializes plain objects', (t) => {
     }),
     'bar.baz=1&bar.baz=a&foo=1',
   )
+
+  t.is(
+    serializeUrlSearchParams({
+      foo: {},
+      bar: { baz: { x: { z: null, t: {} } } },
+    }),
+    'bar.baz.x.z=',
+  )
 })
 
 test('cannot serialize keys containing a .', (t) => {
