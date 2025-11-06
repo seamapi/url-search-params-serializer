@@ -58,6 +58,8 @@ which encodes most non-alphanumeric characters.
   to dot-path format and then serializes the values as above, e.g.,
   `{ foo: 'a', bar: { baz: 'b', fizz: [1, 2] } }` serializes to
   `foo=a&bar.baz=b&bar.fizz=1&bar.fizz=2`.
+- Empty objects are serialized to `undefined`, e.g.,
+  `{ foo: {}, bar: { baz: {} }, fizz: 1 }` serializes to `fizz=1`.
 - Serialization of keys containing a `.`
   is not supported and will throw an `UnserializableParamError`.
 - Serialization of nested arrays or objects nested inside arrays
