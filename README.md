@@ -69,6 +69,10 @@ which encodes most non-alphanumeric characters.
 - Serialization of `NaN`, `Infinity`, and `-Infinity`
   is not supported and will throw an `UnserializableParamError`.
 
+#### Why is the empty string and empty object parsed as undefined but not the empty array?
+
+TODO
+
 ### Compatible parsing strategy
 
 Serialization is guaranteed to be well-defined within each type, i.e.,
