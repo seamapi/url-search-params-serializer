@@ -84,7 +84,7 @@ the consumer parsing the string, it can be unambigously parsed back to the origi
 ##### Primitive
 
 - `string | null`.
-  - Excludes zero-length strings.
+  - Excludes zero-length strings or treats them incidentally as `undefined`.
 - `number | null`.
 - `bigint | null`.
 - `boolean | null`.
