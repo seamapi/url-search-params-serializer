@@ -17,6 +17,11 @@ test('serializes string', (t) => {
   t.is(serializeUrlSearchParams({ foo: '0' }), 'foo=0')
 })
 
+test('serializes the empty string to undefined', (t) => {
+  t.is(serializeUrlSearchParams({ foo: '' }), '')
+  t.is(serializeUrlSearchParams({ foo: 'd', bar: '' }), 'foo=d')
+})
+
 test('serializes number', (t) => {
   t.is(serializeUrlSearchParams({ foo: 1 }), 'foo=1')
   t.is(serializeUrlSearchParams({ foo: 23.8 }), 'foo=23.8')
@@ -169,12 +174,6 @@ test('cannot serialize non-plain objects', (t) => {
     }
   }
   t.throws(() => serializeUrlSearchParams({ foo: new Foo() }), {
-    instanceOf: UnserializableParamError,
-  })
-})
-
-test('cannot serialize the empty string', (t) => {
-  t.throws(() => serializeUrlSearchParams({ foo: '' }), {
     instanceOf: UnserializableParamError,
   })
 })

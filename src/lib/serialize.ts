@@ -42,6 +42,10 @@ const nestedUpdateUrlSearchParams = (
       continue
     }
 
+    if (typeof value === 'string' && value.length === 0) {
+      continue
+    }
+
     if (Array.isArray(value)) {
       if (value.length === 0) {
         searchParams.set(name, '')
@@ -79,12 +83,6 @@ const nestedUpdateUrlSearchParams = (
 const serialize = (k: string, v: unknown): string => {
   if (v === null) return ''
   if (typeof v === 'string') {
-    if (v.length === 0) {
-      throw new UnserializableParamError(
-        k,
-        'is the empty string which is unsupported',
-      )
-    }
     return v.toString()
   }
   if (typeof v === 'number') {
