@@ -71,7 +71,7 @@ so equivalent inputs produce the same query string.
 - Serialization of `NaN`, `Infinity`, and `-Infinity`
   is not supported and will throw an `UnserializableParamError`.
 
-#### Why is the empty string and empty object parsed as undefined but not the empty array?
+#### Why is the empty string and empty object serialized to undefined but not the empty array?
 
 The empty string, empty object, and empty array are all "empty" values,
 however, they differ in usefulness and natural intention when represented in a query string.
