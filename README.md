@@ -71,7 +71,35 @@ which encodes most non-alphanumeric characters.
 
 #### Why is the empty string and empty object parsed as undefined but not the empty array?
 
-TODO
+The empty string, empty object, and empty array are all "empty" values,
+however, they differ in usefulness and natural intention when represented in a query string.
+
+The empty string is serialized as `undefined` because
+query parameters cannot distinguish an empty string from `null`.
+For example, both `{ foo: '' }` and `{ foo: null }` would naturally serialize to `foo=`.
+This serializer reserves `foo=` for `null`, because passing `null` in JavaScript is usually intentional.
+In contrast, `undefined` is JavaScript's default absence value:
+optional object properties, optional chaining, and missing values generally produce `undefined`.
+Treating the empty string as absent therefore aligns with the common case
+where an empty string from a form input means "no value was provided."
+
+Empty objects are serialized as `undefined` because
+they do not contain any values to serialize.
+Since nested objects are represented using dot-path keys by this serializer,
+an empty object would not produce any query parameter at all.
+
+The empty array is different because omitting an array parameter
+and passing an empty array parameter can have different meanings.
+For example, omitting a filter parameter may mean "do not filter by this field,"
+while passing an empty array may naturally result from code that collected
+matching or selected values, but found none.
+In that case, the empty array means "filter by no allowed values."
+Arrays are serialized as repeated keys, such as `foo=1&foo=2`.
+An empty array has no values to repeat, so the serializer uses `foo=`
+to represent the that an empty array was provided.
+This overlaps with the serialization of `null`, so parser implementations
+should avoid nullable array parameters and parse `foo=` as an empty array
+when the schema says the parameter is an array.
 
 ### Compatible parsing strategy
 
