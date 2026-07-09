@@ -11,7 +11,7 @@ Defines the standard for how the Seam SDKs and other Seam API consumers
 should serialize objects to [URLSearchParams] in HTTP GET requests.
 Serves as a reference implementation for Seam SDKs in other languages.
 
-This serializer may be used as a true inverse operation to [@seamapi/url-search-params-parser][@url-search-params-parser].
+This serializer may be used as a inverse operation when paired with a compatible schema-aware parser like [@seamapi/url-search-params-parser][@url-search-params-parser].
 
 [URLSearchParams]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
 [@url-search-params-parser]: https://github.com/seamapi/url-search-params-parser
