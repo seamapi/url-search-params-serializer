@@ -64,7 +64,7 @@ which encodes most non-alphanumeric characters.
   is not supported and will throw an `UnserializableParamError`.
 - Serialization of nested arrays or objects nested inside arrays
   is not supported and will throw an `UnserializableParamError`.
-- Serialization of functions or other objects is
+- Serialization of functions or other objects
   is not supported and will throw an `UnserializableParamError`.
 - Serialization of `NaN`, `Infinity`, and `-Infinity`
   is not supported and will throw an `UnserializableParamError`.
@@ -96,7 +96,7 @@ matching or selected values, but found none.
 In that case, the empty array means "filter by no allowed values."
 Arrays are serialized as repeated keys, such as `foo=1&foo=2`.
 An empty array has no values to repeat, so the serializer uses `foo=`
-to represent the that an empty array was provided.
+to represent that an empty array was provided.
 This overlaps with the serialization of `null`, so parser implementations
 should avoid nullable array parameters and parse `foo=` as an empty array
 when the schema says the parameter is an array.
@@ -105,9 +105,9 @@ when the schema says the parameter is an array.
 
 Serialization is guaranteed to be well-defined within each type, i.e.,
 if the value-type for a given key in the query string is fixed and known by
-the consumer parsing the string, it can be unambigously parsed back to the original primitive value:
+the consumer parsing the string, it can be unambiguously parsed back to the original primitive value:
 
-- A parser can implement a inverse function to the serialization if it uses a schema which,
+- A parser can implement an inverse function to the serialization if it uses a schema which,
   for each node, defines a type matching exactly one of the primitive or nested types below.
 - Any node may be marked optional, i.e., `undefined`, which corresponds to the absence of the key in the query string.
 - The parser may choose `Temporal.Instant` as an equivalent alternative to `Date`.
@@ -220,8 +220,8 @@ This module establishes the serialization standard adopted by the Seam API.
 - Impractical as a reference implementation.
   qs enables complex, non-standard parsing and serialization,
   which makes ensuing SDK parity much harder.
-  Similarly, this puts an unreasonable burden on user's of the HTTP API or those implementing their own client.
-- The Seam API must ensure it handles a well defined set of non-string query parameters consistency.
+  Similarly, this puts an unreasonable burden on users of the HTTP API or those implementing their own client.
+- The Seam API must ensure it handles a well-defined set of non-string query parameters consistently.
   Using qs would allow the SDK to send unsupported or incorrectly serialized parameter types to the API
   resulting in unexpected behavior.
 
