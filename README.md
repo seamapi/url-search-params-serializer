@@ -11,7 +11,7 @@ Defines the standard for how the Seam SDKs and other Seam API consumers
 should serialize objects to [URLSearchParams] in HTTP GET requests.
 Serves as a reference implementation for Seam SDKs in other languages.
 
-This serializer may be used as a true inverse operation to [@seamapi/url-search-params-parser][@url-search-params-parser].
+This serializer may be used as a inverse operation when paired with a compatible schema-aware parser like [@seamapi/url-search-params-parser][@url-search-params-parser].
 
 [URLSearchParams]: https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
 [@url-search-params-parser]: https://github.com/seamapi/url-search-params-parser
@@ -21,6 +21,8 @@ This serializer may be used as a true inverse operation to [@seamapi/url-search-
 Serialization uses
 [`URLSearchParams.toString()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toString#return_value)
 which encodes most non-alphanumeric characters.
+Serialization output is stable: object keys are serialized in deterministic order,
+so equivalent inputs produce the same query string.
 
 - The primitive `null` is serialized to an empty value,
   e.g., `{ foo: null }` serializes to `foo=`.
@@ -58,22 +60,56 @@ which encodes most non-alphanumeric characters.
   to dot-path format and then serializes the values as above, e.g.,
   `{ foo: 'a', bar: { baz: 'b', fizz: [1, 2] } }` serializes to
   `foo=a&bar.baz=b&bar.fizz=1&bar.fizz=2`.
+- Empty objects are serialized to `undefined`, e.g.,
+  `{ foo: {}, bar: { baz: {} }, fizz: 1 }` serializes to `fizz=1`.
 - Serialization of keys containing a `.`
   is not supported and will throw an `UnserializableParamError`.
 - Serialization of nested arrays or objects nested inside arrays
   is not supported and will throw an `UnserializableParamError`.
-- Serialization of functions or other objects is
+- Serialization of functions or other objects
   is not supported and will throw an `UnserializableParamError`.
 - Serialization of `NaN`, `Infinity`, and `-Infinity`
   is not supported and will throw an `UnserializableParamError`.
+
+#### Why is the empty string and empty object serialized to undefined but not the empty array?
+
+The empty string, empty object, and empty array are all "empty" values,
+however, they differ in usefulness and natural intention when represented in a query string.
+
+The empty string is serialized as `undefined` because
+query parameters cannot distinguish an empty string from `null`.
+For example, both `{ foo: '' }` and `{ foo: null }` would naturally serialize to `foo=`.
+This serializer reserves `foo=` for `null`, because passing `null` in JavaScript is usually intentional.
+In contrast, `undefined` is JavaScript's default absence value:
+optional object properties, optional chaining, and missing values generally produce `undefined`.
+Treating the empty string as absent therefore aligns with the common case
+where an empty string from a form input means "no value was provided."
+
+Empty objects are serialized as `undefined` because
+they do not contain any values to serialize.
+Since nested objects are represented using dot-path keys by this serializer,
+an empty object would not produce any query parameter at all.
+
+The empty array is different because omitting an array parameter
+and passing an empty array parameter can have different meanings.
+For example, omitting a filter parameter may mean "do not filter by this field,"
+while passing an empty array may naturally result from code that collected
+matching or selected values, but found none.
+In that case, the empty array means "filter by no allowed values."
+Arrays are serialized as repeated keys, such as `foo=1&foo=2`.
+An empty array has no values to repeat, so the serializer uses `foo=`
+to represent that an empty array was provided.
+This overlaps with the serialization of `null`, so parser implementations
+should avoid nullable array parameters and parse `foo=` as an empty array
+when the schema says the parameter is an array.
 
 ### Compatible parsing strategy
 
 Serialization is guaranteed to be well-defined within each type, i.e.,
 if the value-type for a given key in the query string is fixed and known by
-the consumer parsing the string, it can be unambigously parsed back to the original primitive value:
+the consumer parsing the string, it can be unambiguously parsed back to the original primitive value:
 
-- A parser can implement a inverse function to the serialization if it uses a schema which,
+- A parser can implement an inverse function to the serialization if it uses a schema which,
   for each node, defines a type matching exactly one of the primitive or nested types below.
 - Any node may be marked optional, i.e., `undefined`, which corresponds to the absence of the key in the query string.
 - The parser may choose `Temporal.Instant` as an equivalent alternative to `Date`.
@@ -82,7 +118,7 @@ the consumer parsing the string, it can be unambigously parsed back to the origi
 ##### Primitive
 
 - `string | null`.
-  - Excludes zero-length strings.
+  - Excludes zero-length strings or treats them incidentally as `undefined`.
 - `number | null`.
 - `bigint | null`.
 - `boolean | null`.
@@ -186,8 +222,8 @@ This module establishes the serialization standard adopted by the Seam API.
 - Impractical as a reference implementation.
   qs enables complex, non-standard parsing and serialization,
   which makes ensuing SDK parity much harder.
-  Similarly, this puts an unreasonable burden on user's of the HTTP API or those implementing their own client.
-- The Seam API must ensure it handles a well defined set of non-string query parameters consistency.
+  Similarly, this puts an unreasonable burden on users of the HTTP API or those implementing their own client.
+- The Seam API must ensure it handles a well-defined set of non-string query parameters consistently.
   Using qs would allow the SDK to send unsupported or incorrectly serialized parameter types to the API
   resulting in unexpected behavior.
 
