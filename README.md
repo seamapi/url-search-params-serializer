@@ -21,6 +21,8 @@ This serializer may be used as a inverse operation when paired with a compatible
 Serialization uses
 [`URLSearchParams.toString()`](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams/toString#return_value)
 which encodes most non-alphanumeric characters.
+Serialization output is stable: object keys are serialized in deterministic order,
+so equivalent inputs produce the same query string.
 
 - The primitive `null` is serialized to an empty value,
   e.g., `{ foo: null }` serializes to `foo=`.
