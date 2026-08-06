@@ -1,12 +1,10 @@
 export default () => {
   return {
     files: ['**/*.test.ts', '!package/**/*'],
-    ignoreChanges: {
-      watchMode: ['tmp/**/*'],
+    watchMode: {
+      ignoreChanges: ['tmp/**/*'],
     },
-    extensions: {
-      ts: 'commonjs',
-    },
+    extensions: ['ts'],
     nodeArguments: ['--import=tsx'],
   }
 }
