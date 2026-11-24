@@ -1,6 +1,6 @@
-ARG VARIANT="24"
+ARG VARIANT="26"
 
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:${VARIANT}
+FROM mcr.microsoft.com/devcontainers/javascript-node:${VARIANT}
 
 USER node
 WORKDIR /home/node

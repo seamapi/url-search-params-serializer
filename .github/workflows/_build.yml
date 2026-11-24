@@ -8,7 +8,7 @@ on:
         description: The Node.js version.
         type: string
         required: false
-        default: '24'
+        default: '26'
     outputs:
       artifact_name:
         description: The artifact name.
@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
       - name: Setup
-        uses: ./.github/actions/setup
+        uses: $/.github/actions/setup
         with:
           node_version: ${{ inputs.node_version }}
       - name: Build
