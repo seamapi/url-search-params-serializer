@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package.json",
   "name": "@seamapi/url-search-params-serializer",
-  "version": "3.0.3",
+  "version": "3.1.0",
   "description": "Serializes JavaScript objects to URLSearchParams.",
   "type": "module",
   "main": "index.js",
